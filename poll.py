@@ -1,4 +1,4 @@
-import sys, os, time, math
+import sys, subprocess, time, math
 import requests
 import ctypes
 from rgbxy import Converter, GamutC
@@ -32,7 +32,7 @@ def loop():
                 # Update liquidctl
                 hex_adjusted = converter.xy_to_hex(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
                 liquidctlpath = "C:\\Users\\Alex\\Documents\\GitHub\\hue_poll\\liquidctl-1.1.0-bin-windows-x86_64\\liquidctl.exe"
-                os.system(liquidctlpath + " set sync color fixed " + hex_adjusted)
+                subprocess.Popen([liquidctlpath, "set",  "sync", "color", "fixed", hex_adjusted], shell=True)
 
                 # Update MSIRBG
                 (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
@@ -41,7 +41,7 @@ def loop():
                 b = adjust(b, 255)
                 print(r, g, b)
                 huepollmsipath = "C:\\Users\\Alex\\Documents\\GitHub\\HuePollMSIRGB\\HuePollMSIRGB\\bin\\x64\\Debug\\HuePollMSIRGB.exe"
-                os.system(huepollmsipath + " " + str(r) + " " + str(g) + " " + str(b))
+                subprocess.Popen([huepollmsipath, str(r), str(g), str(b)], shell=True)
 
                 # Update windows background
                 processImages()

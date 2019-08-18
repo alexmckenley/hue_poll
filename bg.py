@@ -32,12 +32,10 @@ def extractAndRename(src):
 
 def processImages():
     images = [f for f in listdir(IMG_DIR) if (f.endswith(".jpg") and not f.endswith(EXTRACTED_SUFFIX))]
-    for f in images:
-        extractAndRename(f)
-    # executor = concurrent.futures.ProcessPoolExecutor(8)
-    # futures = [executor.submit(extractAndRename, f) for f in images]
-    # concurrent.futures.wait(futures)
-    # executor.shutdown()
+    executor = concurrent.futures.ProcessPoolExecutor(8)
+    futures = [executor.submit(extractAndRename, f) for f in images]
+    concurrent.futures.wait(futures)
+    executor.shutdown()
 
 def getClosestImg(rgb):
     dist = [9999, "no img"]
