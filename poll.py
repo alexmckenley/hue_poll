@@ -6,10 +6,10 @@ from rgbxy import Converter, GamutC
 timeout = 3
 iterations = math.floor((60 - timeout) / timeout)
 
-# def adjust(num, max):
-#     pct = num / 255
-#     val = math.floor(max * pct)
-#     return val
+def adjust(num, max):
+    pct = num / 255
+    val = math.floor(max * pct)
+    return val
 
 lastHex = ""
 for i in range(iterations):
@@ -31,13 +31,13 @@ for i in range(iterations):
             os.system(liquidctlpath + " set sync color fixed " + hex)
 
             # Update MSIRBG
-            # (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=0.05)
-            # r = adjust(r, 255)
-            # g = adjust(g, 255)
-            # b = adjust(b, 255)
-            # print(r, g, b)
-            # huepollmsipath = "C:\\Users\\Alex\\Documents\\GitHub\\HuePollMSIRGB\\HuePollMSIRGB\\bin\\x64\\Debug\\HuePollMSIRGB.exe"
-            # os.system(huepollmsipath + " " + str(r) + " " + str(g) + " " + str(b))
+            (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=bri)
+            r = adjust(r, 255)
+            g = adjust(g, 255)
+            b = adjust(b, 255)
+            print(r, g, b)
+            huepollmsipath = "C:\\Users\\Alex\\Documents\\GitHub\\HuePollMSIRGB\\HuePollMSIRGB\\bin\\x64\\Debug\\HuePollMSIRGB.exe"
+            os.system(huepollmsipath + " " + str(r) + " " + str(g) + " " + str(b))
 
             print('Success: ' + hex)
     else:
