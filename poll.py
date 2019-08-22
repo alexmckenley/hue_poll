@@ -3,6 +3,7 @@ import requests
 import ctypes
 from rgbxy import Converter, GamutC
 from bg import processImages, getClosestImg
+from arduino import sendRGB
 
 POLL_INTERVAL = 4 # seconds
 led_bri = .1
@@ -32,16 +33,20 @@ def loop():
                 # Update liquidctl
                 hex_adjusted = converter.xy_to_hex(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
                 liquidctlpath = "C:\\Users\\Alex\\Documents\\GitHub\\hue_poll\\liquidctl-1.1.0-bin-windows-x86_64\\liquidctl.exe"
+                # subprocess.Popen([liquidctlpath, "set",  "sync", "color", "fixed", hex_adjusted], shell=True)
                 subprocess.Popen([liquidctlpath, "set",  "sync", "color", "fixed", hex_adjusted], shell=True)
 
                 # Update MSIRBG
                 (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
-                r = adjust(r, 255)
-                g = adjust(g, 255)
-                b = adjust(b, 255)
+                r = adjust(r, 75)
+                g = adjust(g, 75)
+                b = adjust(b, 75)
                 print(r, g, b)
                 huepollmsipath = "C:\\Users\\Alex\\Documents\\GitHub\\HuePollMSIRGB\\HuePollMSIRGB\\bin\\x64\\Debug\\HuePollMSIRGB.exe"
                 subprocess.Popen([huepollmsipath, str(r), str(g), str(b)], shell=True)
+
+                # Update Arduino
+                sendRGB(r, g, b)
 
                 # Update windows background
                 processImages()
