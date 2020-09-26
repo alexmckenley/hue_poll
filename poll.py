@@ -6,7 +6,9 @@ from bg import processImages, getClosestImg
 from arduino import sendRGB
 
 POLL_INTERVAL = 4 # seconds
-led_bri = .1
+LED_BRI = .1
+DESKTOP_BRI = .2
+HUE_BRIDGE_IP = "alexs.lan"
 
 def adjust(num, max):
     pct = num / 255
@@ -16,7 +18,7 @@ def adjust(num, max):
 def loop():
     lastColor = ""
     while True:
-        uri = "http://192.168.1.28/api/gBy8DB7KImW4A4KTOZFMndlc1Cqq3Fvgr13MSLpH/lights/10"
+        uri = "http://" + HUE_BRIDGE_IP + "/api/gBy8DB7KImW4A4KTOZFMndlc1Cqq3Fvgr13MSLpH/lights/13"
         response = requests.get(uri)
         if response:
             data = response.json()
@@ -31,26 +33,28 @@ def loop():
                 lastColor = str(rgb)
 
                 # Update liquidctl
-                hex_adjusted = converter.xy_to_hex(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
+                hex_adjusted = converter.xy_to_hex(data["state"]["xy"][0],data["state"]["xy"][1], bri=LED_BRI)
                 liquidctlpath = "C:\\Users\\Alex\\Documents\\GitHub\\hue_poll\\liquidctl-1.1.0-bin-windows-x86_64\\liquidctl.exe"
                 # subprocess.Popen([liquidctlpath, "set",  "sync", "color", "fixed", hex_adjusted], shell=True)
                 subprocess.Popen([liquidctlpath, "set",  "sync", "color", "fixed", hex_adjusted], shell=True)
 
                 # Update MSIRBG
-                (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
-                r = adjust(r, 75)
-                g = adjust(g, 75)
-                b = adjust(b, 75)
-                print(r, g, b)
-                huepollmsipath = "C:\\Users\\Alex\\Documents\\GitHub\\HuePollMSIRGB\\HuePollMSIRGB\\bin\\x64\\Debug\\HuePollMSIRGB.exe"
-                subprocess.Popen([huepollmsipath, str(r), str(g), str(b)], shell=True)
+                # (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=led_bri)
+                # r = adjust(r, 100)
+                # g = adjust(g, 100)
+                # b = adjust(b, 100)
+                # print(r, g, b)
+                # huepollmsipath = "C:\\Users\\Alex\\Documents\\GitHub\\HuePollMSIRGB\\HuePollMSIRGB\\bin\\x64\\Debug\\HuePollMSIRGB.exe"
+                # subprocess.Popen([huepollmsipath, str(r), str(g), str(b)], shell=True)
 
                 # Update Arduino
+                (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=LED_BRI)
                 sendRGB(r, g, b)
 
                 # Update windows background
                 processImages()
-                bestImg = getClosestImg(rgb)
+                (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=DESKTOP_BRI)
+                bestImg = getClosestImg([r, g, b])
                 if bestImg is not None:
                     print('setting bg to:' + bestImg)
                     ctypes.windll.user32.SystemParametersInfoW(20, 0, bestImg , 0)

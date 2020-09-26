@@ -43,7 +43,7 @@ def waitForArduino():
     if initialized:
         return
     try:
-      ser = serial.Serial("COM5", 57600, timeout=5)
+      ser = serial.Serial("COM8", 57600, timeout=5)
     except:
       return
     result = ser.read()
