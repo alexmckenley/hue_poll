@@ -8,7 +8,7 @@ from arduino import sendRGB
 POLL_INTERVAL = 4 # seconds
 LED_BRI = .1
 DESKTOP_BRI = .2
-HUE_BRIDGE_IP = "alexs.lan"
+HUE_BRIDGE_IP = "alexs.sobr.home"
 
 def adjust(num, max):
     pct = num / 255
