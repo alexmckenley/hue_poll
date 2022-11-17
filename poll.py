@@ -18,7 +18,7 @@ def adjust(num, max):
 def loop():
     lastColor = ""
     while True:
-        uri = "http://" + HUE_BRIDGE_IP + "/api/gBy8DB7KImW4A4KTOZFMndlc1Cqq3Fvgr13MSLpH/lights/13"
+        uri = "http://" + HUE_BRIDGE_IP + "/api/gBy8DB7KImW4A4KTOZFMndlc1Cqq3Fvgr13MSLpH/lights/9"
         response = requests.get(uri)
         if response:
             data = response.json()
@@ -53,10 +53,11 @@ def loop():
 
                 # Update windows background
                 processImages()
+                print('PROCESSING: ' + str(rgb) + "\n")
                 (r, g, b) = converter.xy_to_rgb(data["state"]["xy"][0],data["state"]["xy"][1], bri=DESKTOP_BRI)
                 bestImg = getClosestImg([r, g, b])
                 if bestImg is not None:
-                    print('setting bg to:' + bestImg)
+                    print('setting bg to:' + bestImg + "\n")
                     ctypes.windll.user32.SystemParametersInfoW(20, 0, bestImg , 0)
 
                 print('Success: ' + str(rgb))

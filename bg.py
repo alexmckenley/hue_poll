@@ -5,6 +5,7 @@ from concurrent import futures
 from colorthief import ColorThief
 from os import listdir, rename
 from os.path import isfile, join, getmtime
+from random import randint
 
 IMG_DIR = "C:\\Users\\Alex\\Documents\\GitHub\\hue_poll\\images"
 COLOR_COUNT = 3
@@ -39,14 +40,14 @@ def processImages():
     executor.shutdown()
 
 def getClosestImg(rgb):
-    dist = [9999, "no img"]
+    dist = [[9999, "no img"]]
     images = [f for f in listdir(IMG_DIR) if f.endswith(EXTRACTED_SUFFIX)]
     for image in images:
         json_str = image.replace(EXTRACTED_SUFFIX, '')
         palette = json.loads(json_str)
         new = min(colordist(palette[0], rgb), (colordist(palette[1], rgb) * 1.5), (colordist(palette[2], rgb) * 2))
-        if new < dist[0]:
-            dist = [new, image]
-    if dist[0] is 9999:
+        if new < dist[-1][0]:
+            dist.append([new, image])
+    if dist[-1][0] is 9999:
         return None
-    return join(IMG_DIR, dist[1])
+    return join(IMG_DIR, dist[-1 * randint(1, min(10, len(dist)))][1])
