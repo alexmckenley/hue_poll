@@ -1,9 +1,10 @@
-import sys, subprocess, time, math
+import sys, subprocess, time, math, os
 import requests
 import ctypes
 from rgbxy import Converter, GamutC
 from bg import processImages, getClosestImg
 from arduino import sendRGB
+from swinlnk.swinlnk import SWinLnk
 
 POLL_INTERVAL = 4 # seconds
 LED_BRI = .1
@@ -16,9 +17,24 @@ def adjust(num, max):
     return val
 
 def logImagePath(path):
-    file1 = open("bglog.txt", "a")  # append mode
-    file1.write(f"{path}\n")
-    file1.close()
+    # Write log file
+    file = open("bglog.txt", "r+")
+    logdata = file.read()
+    lines = logdata.splitlines()
+    lines = lines[-9:-1]
+    print(lines)
+    lines.append(path)
+    file.seek(0)
+    file.write("\n".join(lines))
+    file.truncate()
+    # Create windows shortcut
+    swl = SWinLnk()
+    swl.create_lnk(path, 'CurrentBackground.lnk')
+
+    # Add shortcut to desktop 
+    desktop = os.path.expanduser("~/Desktop")
+    swl.create_lnk(path, f"{desktop}\CurrentBackground.lnk")
+
 
 def loop():
     lastColor = ""
