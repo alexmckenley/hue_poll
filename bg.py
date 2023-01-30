@@ -50,4 +50,5 @@ def getClosestImg(rgb):
             dist.append([new, image])
     if dist[-1][0] is 9999:
         return None
-    return join(IMG_DIR, dist[-1 * randint(1, min(10, len(dist)))][1])
+    return join(IMG_DIR, dist[-1 * randint(1, min(30, len(dist) - 1))][1])
+    

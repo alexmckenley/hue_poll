@@ -15,6 +15,11 @@ def adjust(num, max):
     val = math.floor(max * pct)
     return val
 
+def logImagePath(path):
+    file1 = open("bglog.txt", "a")  # append mode
+    file1.write(f"{path}\n")
+    file1.close()
+
 def loop():
     lastColor = ""
     while True:
@@ -59,6 +64,7 @@ def loop():
                 if bestImg is not None:
                     print('setting bg to:' + bestImg + "\n")
                     ctypes.windll.user32.SystemParametersInfoW(20, 0, bestImg , 0)
+                    logImagePath(bestImg)
 
                 print('Success: ' + str(rgb))
         else:
