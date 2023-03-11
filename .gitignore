@@ -1,5 +1,7 @@
-__pycache__
+__pycache__/
 images
 images_*
 bglog.txt
 *.pyc
+venv/
+CurrentBackground.lnk
